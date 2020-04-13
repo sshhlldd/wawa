@@ -74,7 +74,7 @@
             paw: false
         };
 
-        var loadingLayer, pawLayer, backLayer, itemLayer, firstLayer, menuLayer, popLayer, player;
+        var loadingLayer, pawLayer, backLayer, itemLayer, firstLayer, menuLayer, popLayer, player, rectbox;
 
 
         function main() {
@@ -97,7 +97,7 @@
                 });
             }
             //LGlobal.setDebug(true);
-            //LGlobal.box2d = new LBox2d(gravity);
+
             LGlobal.preventDefault = false; //滚屏事件 true禁止滚平 flase滚屏
             LMouseEventContainer.set(LMouseEvent.MOUSE_DOWN, false);
             LMouseEventContainer.set(LMouseEvent.MOUSE_UP, false);
@@ -128,6 +128,13 @@
             bgBitmap.x = 0;
             backLayer.addChild(bgBitmap);
 
+            //添加箱子碰撞发范围
+            rectbox = new LSprite();
+            rectbox.x = 530;
+            rectbox.y = 750;
+            rectbox.alpha = 0;
+            rectbox.graphics.drawRect(1, "#000000", [0, 0, 160, 10]);
+            backLayer.addChild(rectbox);
 
             //奖项设置
             showPrize = [{
@@ -251,6 +258,7 @@
             backLayer.addChild(pawLayer);
 
 
+
             lineshape = new LShape();
             pawLayer.addChild(lineshape);
             lineshape.graphics.drawLine(7, "#000000", [0, -500, 0, 210]);
@@ -268,6 +276,9 @@
             pawLayer.addChild(player);
             player.setLabel("open", 0, 0, 0, false);
             player.stop("open");
+
+
+
             addItme();
             addEvent();
         }
@@ -307,6 +318,7 @@
             menuBtn.addEventListener(LMouseEvent.MOUSE_UP, onMenuChange);
             upBtn.addEventListener(LMouseEvent.MOUSE_UP, onUp);
             downBtn.addEventListener(LMouseEvent.MOUSE_UP, onDown);
+
             leftBtn.addEventListener(LMouseEvent.MOUSE_UP, onupLeft);
             leftBtn.addEventListener(LMouseEvent.MOUSE_DOWN, ondownLeft);
             rightBtn.addEventListener(LMouseEvent.MOUSE_UP, onupRight);
@@ -459,7 +471,9 @@
 
 
         function onupLeft() {
+
             mydata.left = false;
+            mydata.right = false;
 
         }
 
@@ -471,7 +485,9 @@
 
         function onupRight() {
             mydata.right = false;
+            mydata.right = false;
         }
+
 
         function ondownRight() {
             mydata.right = true;
@@ -483,14 +499,14 @@
             mydata.paw = true;
             removeEvent();
             idx = hitTest();
-            console.log(idx);
+            //console.log(idx);
 
         }
 
         function hitTest() {
             var pawx = pawLayer.x - pawBitmap.getWidth() * scaleArr[pos] / 2;
 
-            var ix = 0;
+            var ix = -1;
             for (var i = 0; i < itemInfo.x[pos].length; i++) {
                 if (pawx <= itemInfo.x[pos][i] + itemInfo.itemObj[pos][i].getWidth() / 2) {
                     ix = i
@@ -501,9 +517,9 @@
         }
 
         function hitNull() {
-            LTweenLite.to(pawLayer, 1.6, {
+            LTweenLite.to(pawLayer, 2, {
                 y: 50,
-                onComplete:function(){
+                onComplete: function () {
                     openPrize();
                 }
             });
@@ -530,11 +546,11 @@
             var offsetx = pawx - itemInfo.x[pos][idx]; //弧度
 
             var val = Math.abs(pawx - itemInfo.x[pos][idx]);
-            console.log('差值' + val);
+            //console.log('差值' + val);
             if (val > 40) {
                 LTweenLite.to(pawLayer, 1.6, {
                     y: 50,
-                    onComplete(){
+                    onComplete() {
                         openPrize();
                     }
                 });
@@ -550,7 +566,7 @@
                 if (val <= 8) {
                     probability();
                 } else if (val > 8 && val <= 20) {
-                    console.log('方向值：' + offsetx);
+                    //console.log('方向值：' + offsetx);
                     var d = setDirect(offsetx, 8)
                     setTimeout(function () {
                         clearInterval(mytime1);
@@ -595,7 +611,7 @@
         }
         //概率
         function probability() {
-            isPaw = Math.ceil(Math.random() * 10) > 4 ? true : false; //概率是否成功10次中6次有几率成功 谢谢参与
+            isPaw = Math.ceil(Math.random() * 10) > 2 ? true : false; //概率是否成功10次中2次有几率成功 谢谢参与
             var itemHeight = itemInfo.y[pos][idx] + Math.random() * 5 - Math.random() * 5;
             var randomtime = 0; //随机时间 当需要概率的后脱爪
             var angle = -8 + Math.random() * 15;
@@ -665,10 +681,11 @@
         }
 
         function onframe() {
-
+            //console.log(mydata.right);
             if (mydata.right == true) {
                 if (pawLayer.x > 620) {
-                    pawLayer.x = 620
+                    pawLayer.x = 620;
+                    mydata.right = false;
                 } else {
                     pawLayer.x += dx;
                 }
@@ -676,28 +693,37 @@
             }
             if (mydata.left == true) {
                 if (pawLayer.x < 100) {
-                    pawLayer.x = 100
+                    pawLayer.x = 100;
+                    mydata.left = false;
                 } else {
                     pawLayer.x -= dx;
                 }
             }
             if (mydata.paw == true) {
+                if (idx == -1) {
+                    if (pawLayer.hitTestObject(rectbox)) {
+                        console.log('null')
+                        mydata.paw = false;
+                        hitNull()
+                        player.gotoAndStop("open");
+                    }else{
+                        pawLayer.y += dy;
+                    }
+                   
 
-                if (pawLayer.hitTestObject(itemInfo.itemObj[pos][idx])) {
-
-                    player.gotoAndStop("open");
-                    hitting();
-                    mydata.paw = false;
                 } else {
-                    pawLayer.y += dy;
+                    console.log('a')
+                    if (pawLayer.hitTestObject(itemInfo.itemObj[pos][idx])) {
 
+                        player.gotoAndStop("open");
+                        hitting();
+                        mydata.paw = false;
+                    } else {
+                        pawLayer.y += dy;
+
+                    }
                 }
 
-            }
-            if (pawLayer.y >= 650) {
-                mydata.paw = false;
-                hitNull()
-                player.gotoAndStop("open");
 
             }
 
@@ -705,13 +731,12 @@
 
 
         function onagain() {
-          
             popLayer.removeAllChild();
             pawLayer.removeAllChild();
             firstLayer.removeChild(popLayer);
             backLayer.removeChild(itemLayer);
             backLayer.removeChild(pawLayer);
-          
+
             backLayer.removeEventListener(LEvent.ENTER_FRAME, onframe);
             againBtn.removeEventListener(LMouseEvent.MOUSE_DOWN, onagain);
             shareBtn.removeEventListener(LMouseEvent.MOUSE_DOWN, onshare);
