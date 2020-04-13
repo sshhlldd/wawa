@@ -70,7 +70,7 @@ function main() {
     }
     //LGlobal.setDebug(true);
 
-    LGlobal.preventDefault = false; //滚屏事件 true禁止滚平 flase滚屏
+    LGlobal.preventDefault = true; //滚屏事件 true禁止滚平 flase滚屏
     LMouseEventContainer.set(LMouseEvent.MOUSE_DOWN, false);
     LMouseEventContainer.set(LMouseEvent.MOUSE_UP, false);
     LMouseEventContainer.set(LMouseEvent.MOUSE_MOVE, false);
@@ -442,7 +442,8 @@ function onupLeft() {
     mydata.right = false;
 }
 
-function ondownLeft() {
+function ondownLeft(e) {
+    e.preventDefault
     mydata.left = true;
 }
 
@@ -452,7 +453,8 @@ function onupRight() {
 }
 
 
-function ondownRight() {
+function ondownRight(e) {
+    e.preventDefault
     mydata.right = true;
 }
 
@@ -715,6 +717,7 @@ function onprize() {
 }
 
 function onrule() {
+    LGlobal.preventDefault = false;
     var html =
         '<div style="margin:0 auto;line-height:1.7;color:#fff;font-size:14px;">\
         <p>活動時間：7月1日-7月6日<br />活動規則：<br />1.关注日日顺服务成为会员，即可点击“GO”参与活动；<br/> 2.每位会员每天有3次机会参与大转盘游戏;<br/> 3.10元购买指定款净水产品特权、净芯杯、微店优惠券、会员积分、10元话费等你来拿；<br/> 4.奖品信息以实际中奖结果为准，截图无效。<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有<br/> *本活动最终解释权归日日顺服务所有</p></div>';

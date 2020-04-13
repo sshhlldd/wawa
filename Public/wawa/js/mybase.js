@@ -83,6 +83,7 @@ function mypop(tit, html) {
     })
     $('.ec_pop').on('click', '.close', function (event) {
         event.stopPropagation();
+        LGlobal.preventDefault = true;
         $(this).parents('.ec_pop').hide();
         $(".pop_box").removeClass("animation-dialogue-in");
         $("body,html").removeClass("forbid-scroll");
