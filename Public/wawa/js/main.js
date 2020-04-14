@@ -260,8 +260,8 @@ function addItme() {
         for (var j = 0; j < 3; j++) {
             var eLayer = new LSprite();
             var bitmap = new LBitmap(new LBitmapData(dataList["bird"]));
-            eLayer.x = 40 + Math.random() * 50 + (j * bitmap.getWidth());
-            eLayer.y = 650 + Math.random() * 20 + i * 60;
+            eLayer.x = 40 + Math.ceil(Math.random() * 50) + (j * bitmap.getWidth());
+            eLayer.y = 650 + Math.ceil(Math.random() * 20) + i * 60;
             eLayer.scaleX = eLayer.scaleY = scaleArr[i];
             eLayer.addChild(bitmap);
             eLayer.name = "egg" + i + "-" + j;
@@ -349,7 +349,6 @@ function onMenuChange() {
 
 
 function openPrize() {
-    console.log(isPaw);
     var prizeTip = '';
     popLayer = new LSprite();
     popLayer.alpha = 0;
@@ -501,8 +500,8 @@ function setDirect(offset, num) {
 
 
 function hitting() {
-    var randomtime1 = Math.random() * 2000; //随机时间 当爪子和物体差距大的时候 3s内随机托爪
-    var randomtime2 = 2000 + Math.random() * 2000; //随机时间 当爪子和物体差距小的时候 4s内随机托爪
+    var randomtime1 = Math.ceil(Math.random() * 2000); //随机时间 当爪子和物体差距大的时候 3s内随机托爪
+    var randomtime2 = 2000 + Math.ceil(Math.random() * 2000); //随机时间 当爪子和物体差距小的时候 4s内随机托爪
     var itemHeight = itemInfo.y[pos][idx];
 
     var pawx = pawLayer.x - parseInt(pawBitmap.getWidth() * scaleArr[pos] / 2);
@@ -532,30 +531,41 @@ function hitting() {
             //console.log('方向值：' + offsetx);
             var d = setDirect(offsetx, 8)
             setTimeout(function () {
-                clearInterval(mytime1);
-                LTweenLite.to(pawLayer, 1, {
-                    y: 50
-                });
+        
                 //itemInfo.itemObj[pos][idx].y=itemInfo.itemObj[pos][idx].y+dy;
-                LTweenLite.to(itemInfo.itemObj[pos][idx], 0.5, {
-                    y: itemHeight,
+                LTweenLite.to(itemInfo.itemObj[pos][idx], 0.3, {
                     rotate: d,
+                    // y: itemInfo.itemObj[pos][idx].y + 4,
+                    onComplete: function () {
+                        clearInterval(mytime1);
+                        LTweenLite.to(pawLayer, 0.8, {
+                            y: 50
+                        });
+                    }
+    
+                }).to(itemInfo.itemObj[pos][idx], 0.8, {
+                    y: itemHeight,
                     ease: LEasing.Strong.easeIn,
                     onComplete: function () {
-                        openPrize()
+                        openPrize();
                     }
                 });
             }, randomtime2)
         } else {
             var d = setDirect(offsetx, 20)
-            setTimeout(function () {
-                clearInterval(mytime1);
-                LTweenLite.to(pawLayer, 1.2, {
-                    y: 50
-                });
-                LTweenLite.to(itemInfo.itemObj[pos][idx], 0.3, {
-                    y: itemHeight,
+            setTimeout(function () {               
+                LTweenLite.to(itemInfo.itemObj[pos][idx], 0.2, {
                     rotate: d,
+                    // y: itemInfo.itemObj[pos][idx].y + 4,
+                    onComplete: function () {
+                        clearInterval(mytime1);
+                        LTweenLite.to(pawLayer, 1.2, {
+                            y: 50
+                        });
+                    }
+    
+                }).to(itemInfo.itemObj[pos][idx], 0.3, {
+                    y: itemHeight,
                     ease: LEasing.Strong.easeIn,
                     onComplete: function () {
                         openPrize()
@@ -575,19 +585,20 @@ function hitting() {
 //概率
 function probability() {
     isPaw = Math.ceil(Math.random() * 10) > 4 ? true : false; //概率是否成功10次中6次有几率成功 谢谢参与
+    console.log(isPaw);
     var itemHeight = itemInfo.y[pos][idx] + Math.random() * 5 - Math.random() * 5;
-    var randomtime = 0; //随机时间 当需要概率的后脱爪
-    var angle = -8 + Math.random() * 15;
+    var randomtime = 2000 + Math.ceil(Math.random() * 5000); //随机时间 当需要概率的后脱爪
+    var angle = -8 + Math.ceil(Math.random() * 15);
     if (!isPaw) {
         switch (idx) {
             case 0:
-                randomtime = 2000 + Math.random() * 6000;
+                randomtime = 2000 + Math.ceil(Math.random() * 5000);
                 break;
             case 1:
-                randomtime = 2000 + Math.random() * 4000;
+                randomtime = 2000 + Math.ceil(Math.random() * 4000);
                 break;
             case 2:
-                randomtime = 2000 + Math.random() * 2000;
+                randomtime = 2000 + Math.ceil(Math.random() * 2000);
                 break;
         }
         console.log(randomtime);
@@ -615,12 +626,24 @@ function probability() {
                 }
             });
         }, randomtime)
+    }else{
+        var angle1 = -5 + Math.ceil(Math.random() * 10);
+        console.log(angle1);
+        var randomtime3 = 1000 + Math.ceil(Math.random() * 3000);
+        setTimeout(function () {
+            LTweenLite.to(itemInfo.itemObj[pos][idx], 0.5, {
+                rotate: angle1
+            }).to(itemInfo.itemObj[pos][idx], 0.4, {
+                rotate: 2,
+                delay:randomtime3
+            })
+        }, randomtime)
     }
 
 }
 //向右的时候
 function turnRight() {
-    var finalItemHeight = itemInfo.y[2][0] + Math.random() * 20 - Math.random() * 20;
+    var finalItemHeight = itemInfo.y[2][0] + Math.ceil(Math.random() * 20) - Math.ceil(Math.random() * 20);
     mytime2 = setInterval(function () {
         pawLayer.x = pawLayer.x + dx;
         itemInfo.itemObj[pos][idx].x = itemInfo.itemObj[pos][idx].x + dx;
