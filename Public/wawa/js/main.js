@@ -18,8 +18,8 @@ var imgData = [{
     name: "more",
     path: baseUrl + "more.png"
 }, {
-    name: "pic",
-    path: baseUrl + "pic_01.png"
+    name: "bird",
+    path: baseUrl + "bird.png"
 }];
 var dataList = {};
 var showPrize = [];
@@ -259,7 +259,7 @@ function addItme() {
         var yItem = [];
         for (var j = 0; j < 3; j++) {
             var eLayer = new LSprite();
-            var bitmap = new LBitmap(new LBitmapData(dataList["pic"]));
+            var bitmap = new LBitmap(new LBitmapData(dataList["bird"]));
             eLayer.x = 40 + Math.random() * 50 + (j * bitmap.getWidth());
             eLayer.y = 650 + Math.random() * 20 + i * 60;
             eLayer.scaleX = eLayer.scaleY = scaleArr[i];
@@ -358,7 +358,7 @@ function openPrize() {
     popLayer.scaleX = popLayer.scaleY = 0
     firstLayer.addChild(popLayer);
 
-    var bitmap = new LBitmap(new LBitmapData(dataList["pic"]));
+    var bitmap = new LBitmap(new LBitmapData(dataList["bird"]));
     bitmap.x = 310;
     bitmap.y = 293;
     popLayer.addChild(bitmap);
