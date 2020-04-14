@@ -1,10 +1,10 @@
 window.onload = function() {
     init(40, "legend", 750, 1330, main);
 }
-var baseUrl = '/Public/wawa/images/';
+var baseUrl = '../Public/wawa/images/';
 var imgData = [{
     type: "js",
-    path: "/Public/wawa/js/mybase.js"
+    path: "../Public/wawa/js/mybase.js"
 }, {
     name: "front",
     path: baseUrl + "front.png"
